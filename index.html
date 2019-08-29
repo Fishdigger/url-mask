@@ -1,0 +1,35 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.1/build/pure-min.css" integrity="sha384-oAOxQR6DkCoMliIh8yFnu25d7Eq/PHS21PClpwjOTeU2jRSq11vu66rf90/cZr47" crossorigin="anonymous">
+    <title>Url Shortener</title>
+  </head>
+  <body style="margin: 0 auto;">
+    <main class="pure-g" style="margin-top:5%; margin-left: 2%;">
+        <input type="text" placeholder="http://example.com" id="longUrlInput" pattern="https?:\/{2}.+\..+" class="pure-u-2-5"/>
+        <button onclick="handleGenButtonClick()" class="pure-u-1-5">shorten</button>
+    </main>
+    <div class="pure-g" style="margin-top: 2%; margin-left: 2%;">
+      <span class="pure-u-1" id="urlStorage"></span>
+    </div>
+  </body>
+ <script>
+   async function handleGenButtonClick() {
+     let input = document.getElementById('longUrlInput');
+     if (!input.validity.valid) {
+       alert('Url is invalid.\nDid you forget "http(s)?"');
+       return;
+     }
+     let response = await fetch('/api/get-redirect', {
+       method: 'POST',
+       body: JSON.stringify({redirect_to_url: input.value}),
+       headers: {
+         'Content-Type': 'application/json'
+       }
+     });
+     let body = await response.json();
+     const shortUrl = body.short_url;
+     document.getElementById('urlStorage').innerHTML = shortUrl;
+   } 
+ </script>
+</html>
+
